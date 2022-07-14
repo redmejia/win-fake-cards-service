@@ -1,4 +1,5 @@
 .vscode
+dist/
 
 internal/database/migration
 internal/env/
