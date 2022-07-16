@@ -7,9 +7,10 @@ import (
 )
 
 type Transaction struct {
-	Proceed        bool `json:"proceed"`
-	TxAmountIntent int  `json:"tx_amount_intent"`
-	TxStatusCode   int  `json:"tx_status_code"`
+	Proceed        bool   `json:"proceed"`
+	TxAmountIntent int    `json:"tx_amount_intent"`
+	TxStatusCode   int    `json:"tx_status_code"`
+	TxMessage      string `json:"tx_message"`
 }
 
 func (a *ApiConfig) TxIntentHandler(w http.ResponseWriter, r *http.Request) {
@@ -25,14 +26,15 @@ func (a *ApiConfig) TxIntentHandler(w http.ResponseWriter, r *http.Request) {
 	var tx Transaction
 
 	if txAmount < card.Amount {
-		// sent to new micro service to make the envoice
 		tx.Proceed = card.Proceed
 		tx.TxAmountIntent = txAmount
 		tx.TxStatusCode = card.StatusCode
+		tx.TxMessage = "Transanction Accepted"
 	} else {
-		tx.Proceed = card.Proceed
+		tx.Proceed = card.Proceed // false
 		tx.TxAmountIntent = txAmount
 		tx.TxStatusCode = card.StatusCode
+		tx.TxMessage = "Transanction Declined"
 	}
 
 	txByte, err := json.Marshal(tx)
