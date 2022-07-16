@@ -21,7 +21,7 @@ func main() {
 	errLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime)
 
 	app := api.ApiConfig{
-		Port:    ":8080",
+		Port:    ":8083",
 		InfoLog: infoLog,
 		ErrLog:  errLog,
 		DB: database.Postgresql{
