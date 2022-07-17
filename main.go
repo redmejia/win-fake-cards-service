@@ -36,7 +36,7 @@ func main() {
 		Handler: router.Router(&app),
 	}
 
-	log.Println("Server is running at http://localhost:8080/")
+	log.Println("Server is running at http://localhost:8083/")
 	log.Fatal(srv.ListenAndServe())
 
 }

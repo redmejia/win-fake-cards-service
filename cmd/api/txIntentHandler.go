@@ -45,7 +45,7 @@ func (a *ApiConfig) TxIntentHandler(w http.ResponseWriter, r *http.Request) {
 	a.InfoLog.Println(string(txByte))
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusAccepted)
 	w.Write(txByte)
 
 }
