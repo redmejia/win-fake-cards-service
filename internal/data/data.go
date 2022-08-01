@@ -1,6 +1,7 @@
 package data
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 	"strconv"
@@ -26,15 +27,20 @@ const (
 	maxCv = 200
 )
 
+var CardNumberLenError = errors.New("card number length must be 12")
+
 // GenFakeCards
-func GenFakeCards(firstTwelveNum string) (card string) {
+func GenFakeCards(firstTwelveNum string) (string, error) {
+	if len(firstTwelveNum) == 0 || len(firstTwelveNum) < 12 || len(firstTwelveNum) > 12 {
+		return "", CardNumberLenError
+	}
 	rand.Seed(time.Now().UnixNano())
 
 	genNum := rand.Intn(maxNum-minNum) + minNum
 	lastFour := strconv.Itoa(genNum)
 
-	card = fmt.Sprintf("%s%s", firstTwelveNum, lastFour)
-	return
+	card := fmt.Sprintf("%s%s", firstTwelveNum, lastFour)
+	return card, nil
 }
 
 // GenFakeCv

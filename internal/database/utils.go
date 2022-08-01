@@ -23,7 +23,7 @@ func (p *Postgresql) GenerateFakeCards(twelveNum string, amountInCent int, statu
  	`
 	for i := 0; i < 5; i++ {
 
-		fakeCard := data.GenFakeCards(twelveNum)
+		fakeCard, _ := data.GenFakeCards(twelveNum)
 
 		fakeCvNum := data.GenFakeCv()
 
