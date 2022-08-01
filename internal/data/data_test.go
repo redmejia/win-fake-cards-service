@@ -19,3 +19,12 @@ func TestGenFakeCards(t *testing.T) {
 		t.Log("expect len of 16 all pass")
 	}
 }
+
+func TestGenFakeCv(t *testing.T) {
+	expectedLen := 3
+	cv := GenFakeCv()
+	if len(cv) != 3 {
+		t.Errorf("expected length of %d", expectedLen)
+	}
+
+}
