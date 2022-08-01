@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"errors"
 	"log"
 	"time"
 	"win/fake-cards/internal/data"
@@ -58,8 +59,10 @@ func (p *Postgresql) GenerateFakeCards(twelveNum string, amountInCent int, statu
 	return
 }
 
+var NoRowInResultSet = errors.New("sql: no rows in result set")
+
 // GeyInfo get ths card information
-func (p *Postgresql) GetInfo(cardNum, cardCv string) data.Card {
+func (p *Postgresql) GetInfo(cardNum, cardCv string) (data.Card, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -91,10 +94,8 @@ func (p *Postgresql) GetInfo(cardNum, cardCv string) data.Card {
 		&card.Amount,
 		&card.Proceed,
 	)
-
 	if err != nil {
-		p.ErrorLog.Fatal(err)
+		return card, NoRowInResultSet
 	}
-
-	return card
+	return card, nil
 }

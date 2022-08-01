@@ -2,8 +2,10 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"strconv"
+	"win/fake-cards/internal/database"
 )
 
 type Transaction struct {
@@ -19,8 +21,24 @@ func (a *ApiConfig) TxIntentHandler(w http.ResponseWriter, r *http.Request) {
 	// transaction intent
 	txIntent := r.URL.Query()
 
-	card := a.DB.GetInfo(txIntent.Get("card"), txIntent.Get("cv"))
+	card, err := a.DB.GetInfo(txIntent.Get("card"), txIntent.Get("cv"))
+	if err != nil {
+		if errors.Is(err, database.NoRowInResultSet) {
+			var cardNotFound = struct {
+				IsErorr bool   `json:"is_erorr"`
+				Message string `json:"message"`
+			}{
+				IsErorr: true,
+				Message: "no record was found",
+			}
 
+			b, _ := json.Marshal(&cardNotFound)
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusNotFound)
+			w.Write(b)
+		}
+		return
+	}
 	txAmount, _ := strconv.Atoi(txIntent.Get("amount"))
 
 	var tx Transaction

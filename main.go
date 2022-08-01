@@ -24,7 +24,7 @@ func main() {
 		Port:    ":8083",
 		InfoLog: infoLog,
 		ErrLog:  errLog,
-		DB: database.Postgresql{
+		DB: &database.Postgresql{
 			Db:       db,
 			InfoLog:  infoLog,
 			ErrorLog: errLog,

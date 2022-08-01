@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"win/fake-cards/internal/data"
 
 	_ "github.com/jackc/pgx/v4/stdlib"
 )
@@ -14,6 +15,12 @@ type Postgresql struct {
 	Db                *sql.DB
 	DNS               string
 	InfoLog, ErrorLog *log.Logger
+}
+
+// DBFaker for new cards check founding and create cards methods
+type DBFaker interface {
+	GenerateFakeCards(twelveNum string, amountInCent int, statusCode int, proceed bool) (fakeCardPool []data.Card)
+	GetInfo(cardNum, cardCv string) (data.Card, error)
 }
 
 // Ping connection to postgresql database
@@ -29,9 +36,9 @@ func ConnectionPing(db *sql.DB) (bool, error) {
 func Connection() (*sql.DB, error) {
 
 	port, _ := strconv.Atoi(os.Getenv("DBPORT"))
-	connDB := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
-		os.Getenv("HOSTNAME"), port, os.Getenv("DBUSER"), os.Getenv("DBPASSWORD"),
-		os.Getenv("DBNAME"), os.Getenv("DBSSLMODE"),
+	connDB := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s",
+		os.Getenv("HOSTNAME"), port, os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"),
+		os.Getenv("POSTGRES_DB"),
 	)
 
 	db, err := sql.Open("pgx", connDB)

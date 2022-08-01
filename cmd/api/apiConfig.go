@@ -8,5 +8,5 @@ import (
 type ApiConfig struct {
 	Port            string
 	InfoLog, ErrLog *log.Logger
-	DB              database.Postgresql
+	DB              database.DBFaker
 }
