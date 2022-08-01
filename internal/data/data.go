@@ -26,6 +26,7 @@ const (
 	maxCv = 200
 )
 
+// GenFakeCards
 func GenFakeCards(firstTwelveNum string) (card string) {
 	rand.Seed(time.Now().UnixNano())
 
@@ -36,6 +37,7 @@ func GenFakeCards(firstTwelveNum string) (card string) {
 	return
 }
 
+// GenFakeCv
 func GenFakeCv() (cv string) {
 	rand.Seed(time.Now().UnixNano())
 
