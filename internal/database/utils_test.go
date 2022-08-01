@@ -52,8 +52,29 @@ func newMockDBPost() *mockDBPost {
 
 }
 
-func (m *mockDBPost) GenerateFakeCards(twelveNum string, amountInCent int, statusCode int, proceed bool) (fakeCardPool []dbCard) {
-	return nil
+func (m *mockDBPost) GenerateFakeCards(twelveNum string, amountInCent int, statusCode int, proceed bool) (fakeCardPool []data.Card) {
+
+	for i := 0; i < 5; i++ {
+
+		fakeCard := data.GenFakeCards(twelveNum)
+
+		fakeCvNum := data.GenFakeCv()
+
+		cards := data.Card{
+			FullName:   "Elon Musk",
+			CardNumber: fakeCard,
+			CvNumber:   fakeCvNum,
+			StatusCode: statusCode,
+			Amount:     amountInCent,
+			Proceed:    proceed,
+		}
+		// insert or append data card to mock database
+		m.Db = append(m.Db, cards)
+
+		fakeCardPool = append(fakeCardPool, cards)
+
+	}
+	return
 }
 
 func (m *mockDBPost) GetInfo(cardNum, cardCV string) (data.Card, error) {
@@ -93,6 +114,17 @@ func TestGetInfo(t *testing.T) {
 
 	if card.FullName != "" {
 		t.Log(card)
+	}
+
+}
+
+func TestGenFakeCards(t *testing.T) {
+
+	dbase := newMockDBPost()
+	_ = dbase.GenerateFakeCards("111122223333", 1000, 2, true)
+
+	if len(dbase.Db) > 2 {
+		t.Log("Records were inserted")
 	}
 
 }
