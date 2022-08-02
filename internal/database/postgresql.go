@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 	"win/fake-cards/internal/data"
 
 	_ "github.com/jackc/pgx/v4/stdlib"
@@ -22,6 +23,12 @@ type DBFaker interface {
 	GenerateFakeCards(twelveNum string, amountInCent int, statusCode int, proceed bool) (fakeCardPool []data.Card)
 	GetInfo(cardNum, cardCv string) (data.Card, error)
 }
+
+const (
+	OpenConns = 10
+	IdleConns = 3
+	LifeTime  = 60 * time.Second
+)
 
 // Ping connection to postgresql database
 func ConnectionPing(db *sql.DB) (bool, error) {
@@ -43,8 +50,14 @@ func Connection() (*sql.DB, error) {
 
 	db, err := sql.Open("pgx", connDB)
 	if err != nil {
+		log.Fatal(err)
 		return nil, err
 	}
+
+	db.SetMaxOpenConns(OpenConns)
+	db.SetMaxIdleConns(IdleConns)
+	db.SetConnMaxLifetime(LifeTime)
+
 	return db, err
 
 }
