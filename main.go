@@ -12,10 +12,10 @@ import (
 func main() {
 
 	db, err := database.Connection()
-	defer db.Close()
 	if err != nil {
 		log.Println("ERROR ", err)
 	}
+	defer db.Close()
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime)
