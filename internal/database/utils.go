@@ -3,10 +3,52 @@ package database
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"time"
 	"win/fake-cards/internal/data"
 )
+
+func GenFakesTestCardsToInsert(twelveNum string, amountInCent int, statusCode int, proceed bool) []data.Card {
+	var fakeCardsList []data.Card
+	for i := 0; i < 2; i++ {
+		fakeCard, _ := data.GenFakeCards(twelveNum)
+		fakeCvNum := data.GenFakeCv()
+
+		card := data.Card{
+			FullName:   "Elon Musk",
+			CardNumber: fakeCard,
+			CvNumber:   fakeCvNum,
+			StatusCode: statusCode,
+			Amount:     amountInCent,
+			Proceed:    proceed,
+		}
+
+		fakeCardsList = append(fakeCardsList, card)
+	}
+
+	return fakeCardsList
+
+}
+
+func CardForTest(cards []data.Card) string {
+
+	inserCards := `insert into cards (card_issuer, card_number, card_cv_number, status_code, amount, proceed) values `
+
+	for _, card := range cards {
+
+		inserCards += fmt.Sprintln()
+		inserCards += fmt.Sprintf(`(%s, %s, %s, %d, %d, %t),`,
+			card.FullName, card.CardNumber, card.CvNumber, card.StatusCode, card.Amount, card.Proceed,
+		)
+		inserCards += ``
+	}
+	inserCards = inserCards[:len(inserCards)-1]
+
+	inserCards += `;`
+	return inserCards
+
+}
 
 // GenerateFakeCards generate testing cards
 func (p *Postgresql) GenerateFakeCards(twelveNum string, amountInCent int, statusCode int, proceed bool) (fakeCardPool []data.Card) {
@@ -21,7 +63,7 @@ func (p *Postgresql) GenerateFakeCards(twelveNum string, amountInCent int, statu
  		insert into cards (card_issuer, card_number, card_cv_number, status_code, amount, proceed)
  		values ($1, $2, $3, $4, $5, $6)
  	`
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 2; i++ {
 
 		fakeCard, _ := data.GenFakeCards(twelveNum)
 
